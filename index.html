@@ -9,21 +9,21 @@
             --bg: #121215;
             --surface: #1e1e24;
             --primary: #4ade80;
+            --primary-dim: rgba(74, 222, 128, 0.2);
             --text: #ffffff;
             --text-muted: #8b8b99;
         }
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             padding: 20px;
+            padding-bottom: 50px;
             overflow-x: hidden;
         }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        /* Header & Level */
+        .header { text-align: center; margin-bottom: 20px; }
         .level-badge {
             display: inline-block;
             background: linear-gradient(135deg, #fbbf24, #d97706);
@@ -34,20 +34,38 @@
             margin-bottom: 10px;
             box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
         }
-        .progress-container {
-            background: #333;
-            border-radius: 10px;
-            height: 12px;
+        
+        /* Donut Chart (Rad) */
+        .donut-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 30px auto;
+        }
+        .donut {
             width: 100%;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .progress-bar {
-            background: var(--primary);
             height: 100%;
-            width: 0%;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0%, #333 0%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.5s ease;
         }
+        .donut-inner {
+            width: 110px;
+            height: 110px;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .donut-inner h2 { margin: 0; font-size: 28px; }
+        .donut-inner p { margin: 0; font-size: 12px; color: var(--text-muted); }
+
+        /* Habit Cards */
         .habit-card {
             background: var(--surface);
             border-radius: 12px;
@@ -57,21 +75,11 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.1s ease;
         }
-        .habit-card:active {
-            transform: scale(0.98);
-        }
-        .habit-info h3 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-        }
-        .habit-info p {
-            margin: 0;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        /* Chillige Checkbox */
+        .habit-info h3 { margin: 0 0 5px 0; font-size: 16px; }
+        .habit-info p { margin: 0; font-size: 12px; color: var(--text-muted); }
+        
+        /* Checkbox */
         input[type="checkbox"] {
             appearance: none;
             width: 28px;
@@ -80,7 +88,6 @@
             border-radius: 8px;
             outline: none;
             cursor: pointer;
-            transition: all 0.2s;
             position: relative;
         }
         input[type="checkbox"]:checked {
@@ -94,77 +101,138 @@
             color: #121215;
             font-size: 18px;
             font-weight: bold;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
         }
-        @keyframes pop {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* Add Habit Input */
+        .add-habit-container {
+            display: flex;
+            margin-top: 20px;
+            gap: 10px;
         }
-        .floating-xp {
-            position: fixed;
-            color: var(--primary);
+        .add-habit-container input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            background: var(--surface);
+            color: white;
+            font-size: 16px;
+        }
+        .add-habit-container button {
+            background: var(--primary);
+            color: #121215;
+            border: none;
+            border-radius: 8px;
+            padding: 0 20px;
             font-weight: bold;
-            pointer-events: none;
-            animation: floatUp 1s forwards;
-            z-index: 100;
+            font-size: 16px;
         }
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-50px); }
+
+        /* History Grid */
+        .section-title { margin-top: 40px; font-size: 16px; color: var(--text-muted); text-align: center; }
+        .history-grid {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
         }
+        .history-day {
+            width: 35px;
+            height: 35px;
+            background: #333;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .floating-xp {
+            position: fixed; color: var(--primary); font-weight: bold;
+            pointer-events: none; animation: floatUp 1s forwards; z-index: 100;
+        }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div class="level-badge" id="level-display">Level 1</div>
-        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
-            <span>XP für nächstes Level</span>
-            <span id="xp-text">0 / 100</span>
-        </div>
-        <div class="progress-container">
-            <div class="progress-bar" id="xp-bar"></div>
+        <div style="font-size: 12px; color: var(--text-muted);" id="xp-text">0 / 100 XP</div>
+    </div>
+
+    <div class="donut-container">
+        <div class="donut" id="progress-donut">
+            <div class="donut-inner">
+                <h2 id="progress-percent">0%</h2>
+                <p>Heute</p>
+            </div>
         </div>
     </div>
 
-    <div id="habits-container">
-        </div>
+    <div id="habits-container"></div>
+
+    <div class="add-habit-container">
+        <input type="text" id="new-habit-input" placeholder="Neues Ziel (z.B. Laufen)">
+        <button onclick="addNewHabit()">+</button>
+    </div>
+
+    <div class="section-title">Letzte 7 Tage</div>
+    <div class="history-grid" id="history-grid"></div>
 
     <script>
-        // Startwerte
+        const today = new Date().toISOString().split('T')[0];
         let xp = parseInt(localStorage.getItem('habitXP')) || 0;
         let level = parseInt(localStorage.getItem('habitLevel')) || 1;
-        let nextLevelXP = level * 100;
+        
+        // Standard-Habits oder gespeicherte laden
+        let habits = JSON.parse(localStorage.getItem('myHabits'));
+        if (!habits || habits.length === 0) {
+            habits = [
+                { id: 'gym', name: 'Workout 💪', xp: 50 },
+                { id: 'water', name: 'Viel Wasser 💧', xp: 20 }
+            ];
+            saveHabits();
+        }
 
-        // Unsere Habits
-        const habits = [
-            { id: 'gym', name: 'Gym / Workout 💪', xp: 50 },
-            { id: 'water', name: '2L Wasser trinken 💧', xp: 20 },
-            { id: 'read', name: '10 Seiten lesen 📚', xp: 30 },
-            { id: 'meditate', name: 'Meditation 🧘‍♂️', xp: 40 }
-        ];
+        function saveHabits() {
+            localStorage.setItem('myHabits', JSON.stringify(habits));
+        }
 
-        const container = document.getElementById('habits-container');
-        const xpBar = document.getElementById('xp-bar');
-        const xpText = document.getElementById('xp-text');
-        const levelDisplay = document.getElementById('level-display');
+        function getStorageKey(habitId, dateString) {
+            return `habit_${habitId}_${dateString}`;
+        }
 
-        // Heutiges Datum als Schlüssel zum Speichern
-        const today = new Date().toISOString().split('T')[0];
+        function calculateDailyProgress(dateString) {
+            if (habits.length === 0) return 0;
+            let completed = 0;
+            habits.forEach(h => {
+                if (localStorage.getItem(getStorageKey(h.id, dateString)) === 'true') {
+                    completed++;
+                }
+            });
+            return Math.round((completed / habits.length) * 100);
+        }
 
         function updateUI() {
-            nextLevelXP = level * 100;
-            const percentage = (xp / nextLevelXP) * 100;
-            xpBar.style.width = percentage + '%';
-            xpText.innerText = `${xp} / ${nextLevelXP} XP`;
-            levelDisplay.innerText = `Level ${level}`;
-            
-            // Speichern
+            // Level & XP
+            let nextLevelXP = level * 100;
+            document.getElementById('level-display').innerText = `Level ${level}`;
+            document.getElementById('xp-text').innerText = `${xp} / ${nextLevelXP} XP`;
             localStorage.setItem('habitXP', xp);
             localStorage.setItem('habitLevel', level);
+
+            // Donut Chart für heute
+            const percent = calculateDailyProgress(today);
+            const donut = document.getElementById('progress-donut');
+            donut.style.background = `conic-gradient(var(--primary) ${percent}%, #333 ${percent}%)`;
+            document.getElementById('progress-percent').innerText = `${percent}%`;
+
+            renderHistory();
         }
 
         function showFloatingXP(amount, x, y) {
@@ -177,50 +245,97 @@
             setTimeout(() => el.remove(), 1000);
         }
 
-        function toggleHabit(habit, checkbox, event) {
-            const storageKey = `habit_${habit.id}_${today}`;
+        function toggleHabit(habitId, xpReward, checkbox, event) {
+            const key = getStorageKey(habitId, today);
             
             if (checkbox.checked) {
-                // Haken gesetzt
-                xp += habit.xp;
-                localStorage.setItem(storageKey, 'true');
-                showFloatingXP(habit.xp, event.clientX, event.clientY);
+                xp += xpReward;
+                localStorage.setItem(key, 'true');
+                showFloatingXP(xpReward, event.clientX, event.clientY);
                 
-                // Level Up Check
+                let nextLevelXP = level * 100;
                 if (xp >= nextLevelXP) {
                     xp = xp - nextLevelXP;
                     level++;
-                    setTimeout(() => alert(`🎉 LEVEL UP! Du bist jetzt Level ${level}!`), 300);
+                    setTimeout(() => alert(`🎉 LEVEL UP! Level ${level}!`), 300);
                 }
             } else {
-                // Haken entfernt
-                xp -= habit.xp;
-                if (xp < 0) xp = 0; // Kein negatives XP
-                localStorage.setItem(storageKey, 'false');
+                xp -= xpReward;
+                if (xp < 0) xp = 0;
+                localStorage.setItem(key, 'false');
             }
             updateUI();
         }
 
-        // App initialisieren
-        habits.forEach(habit => {
-            const storageKey = `habit_${habit.id}_${today}`;
-            const isDone = localStorage.getItem(storageKey) === 'true';
+        function renderHabits() {
+            const container = document.getElementById('habits-container');
+            container.innerHTML = '';
+            
+            habits.forEach(habit => {
+                const isDone = localStorage.getItem(getStorageKey(habit.id, today)) === 'true';
+                const card = document.createElement('div');
+                card.className = 'habit-card';
+                card.innerHTML = `
+                    <div class="habit-info">
+                        <h3>${habit.name}</h3>
+                        <p>+${habit.xp} XP</p>
+                    </div>
+                    <input type="checkbox" ${isDone ? 'checked' : ''}>
+                `;
+                container.appendChild(card);
+                
+                const cb = card.querySelector('input');
+                cb.addEventListener('change', (e) => toggleHabit(habit.id, habit.xp, cb, e));
+            });
+        }
 
-            const card = document.createElement('div');
-            card.className = 'habit-card';
-            card.innerHTML = `
-                <div class="habit-info">
-                    <h3>${habit.name}</h3>
-                    <p>+${habit.xp} XP</p>
-                </div>
-                <input type="checkbox" id="${habit.id}" ${isDone ? 'checked' : ''}>
-            `;
-            container.appendChild(card);
+        function addNewHabit() {
+            const input = document.getElementById('new-habit-input');
+            const name = input.value.trim();
+            if (name === '') return;
 
-            const checkbox = card.querySelector('input');
-            checkbox.addEventListener('change', (e) => toggleHabit(habit, checkbox, e));
-        });
+            const newHabit = {
+                id: 'custom_' + Date.now(),
+                name: name,
+                xp: 30 // Standard XP für neue Ziele
+            };
+            
+            habits.push(newHabit);
+            saveHabits();
+            input.value = '';
+            renderHabits();
+            updateUI();
+        }
 
+        function renderHistory() {
+            const grid = document.getElementById('history-grid');
+            grid.innerHTML = '';
+            
+            // Schleife für die letzten 7 Tage
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toISOString().split('T')[0];
+                
+                const percent = calculateDailyProgress(dateStr);
+                const block = document.createElement('div');
+                block.className = 'history-day';
+                
+                // Farbe basierend auf Leistung (wie bei GitHub)
+                if (percent === 100) block.style.backgroundColor = '#4ade80'; // Voll
+                else if (percent >= 50) block.style.backgroundColor = '#22c55e'; // Halb
+                else if (percent > 0) block.style.backgroundColor = '#166534'; // Wenig
+                
+                // Tag anzeigen (z.B. Mo, Di)
+                const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+                block.innerText = days[d.getDay()];
+                
+                grid.appendChild(block);
+            }
+        }
+
+        // Start
+        renderHabits();
         updateUI();
     </script>
 </body>
